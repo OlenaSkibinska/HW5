@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+
+    <title>17</title>
+</head>
+<body>
+<div>
+    <div id="viz"></div>
+</div>
+</body>
+
+<script>
+    var chart= {
+        "$schema":"https://vega.github.io/schema/vega-lite/v3.json",
+            "vconcat": [{
+            "hconcat":[{}],
+            "height": 300,
+            "width": 500,
+
+            "projection": {
+                "type": "mercator"
+            },
+
+            "layer": [{
+                "data":{
+                    "url": "map.json",
+                    "format": {
+                        "type": "topojson",
+                        "feature": "Ukraine"
+                    }
+                },
+                "mark": {
+                    "type": "geoshape",
+                    "fill": "lightgray",
+                    "fillOpacity": 0.7,
+                    "stroke": "white",
+                    "strokeWidth": 0.7
+                }
+            },
+
+                {
+                    "data": {
+                        "url": "population.csv"
+                    },
+                    "transform": [
+                        {"filter": {"selection": "brush"}}
+                    ],
+                    "mark":"circle",
+                    "encoding": {
+                        "longitude": {
+                            "field":"lon",
+                            "type": "quantitative"
+                        },
+
+                        "latitude": {
+                            "field": "lat",
+                            "type": "quantitative"
+                        },
+
+                        "color":{
+                            "field": "type",
+                            "type": "nominal",
+                            "scale": {
+                                "range": ["#c51b7d", "#35978f"]
+                            }
+                        },
+
+                        "size":{
+                            "field": "y2014",
+                            "scale": {
+                                "domain":{"selection":"brush"}
+                                // "range": [10, 1000]
+                            }
+                        },
+                        "tooltip":{
+                            "field":"y2014",
+                            "type":"quantitative"
+                        }
+                    }
+                }
+            ]
+
+        },
+
+            {
+                "height": 50,
+                "width": 500,
+                "data":{
+                    "url": "population.csv"
+                },
+                "selection": {
+                    "brush": {"type": "interval"}
+                },
+
+                "mark":"tick",
+
+                "encoding": {
+                    "x": {
+                        "field": "y2014",
+                        "scale": {
+                            "type": "log"
+                        }
+                    },
+
+                    "color":{
+                        "field": "type",
+                        "type": "nominal"
+                    }
+                }
+            }
+
+
+        ]
+    }
+
+    var opts ={
+        "actions": false
+    }
+
+    vegaEmbed('#viz', chart, opts)
+</script>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+
+    <title>HW5</title>
+</head>
+<body>
+<div>
+    <div id="viz"></div>
+</div>
+</body>
+
+<script>
+    var chart = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
+        "data": {"url": "population_by_age_sex_year.csv"},
+        "width": 800,
+        "height": 600,
+        "title": "Population distribution of age groups and gender in selected year",
+        "transform": [{"calculate": "year(datum.year)", "as": "year"}],
+        "layer": [
+            {
+                "selection": {
+                    "Select": {
+                        "type": "single", "fields": ["year"],
+                        "bind": {
+                            "year": {"input": "range", "min": 1989, "max": 2017, "step": 1}
+                        }
+                    }
+                },
+                "mark": {
+                    "type": "line",
+                    "opacity": 0,
+                    "size": 10,
+                },
+
+                "encoding": {
+                    "x": {
+                        "field": "age",
+                        "type": "quantitative",
+                        "axis":{
+                            "title":"Age"
+                        }
+                    },
+                    "y": {
+                        "field": "women",
+                        "type": "quantitative",
+                        "axis":{
+                            "title":"Population"
+                        }
+                    },
+
+                },
+
+            },
+            {
+                "transform": [{"filter": {"selection": "Select"}}],
+                "mark": {
+                    "type": "line",
+                    "point": {
+                        "fill": "#F8BDC8",
+                        "opacity": 1,
+                        "size": 50,
+                    },
+                    "color": "#F8BDC8",
+                    "opacity": 0.5,
+                    "size": 10,
+                },
+
+                "encoding": {
+                    "x": {
+                        "field": "age",
+                        "type": "quantitative",
+                    },
+                    "y": {"field": "women", "type": "quantitative"},
+                    "color":{
+                        "legend":{
+
+                        }
+                    }
+
+                },
+
+            },
+            {
+                "transform": [{"filter": {"selection": "Select"}}],
+                "mark": {
+                    "type": "line",
+                    "point": {
+                        "fill": "#9AC2F3",
+                        "opacity": 1,
+                        "size": 50,
+                    },
+                    "color": "#9AC2F3",
+                    "opacity": 0.5,
+                    "size": 10,
+                },
+                "encoding": {
+                    "x": {
+                        "field": "age",
+                        "type": "quantitative",
+                    },
+                    "y": {"field": "men", "type": "quantitative"},
+                    "color":{
+
+                        "legend":{
+
+                        }
+                    }
+                }
+            }
+
+        ],
+
+
+    }
+
+    var opts = {
+        "actions": false
+    }
+
+    vegaEmbed('#viz', chart, opts)
+</script>
+
+</html>
